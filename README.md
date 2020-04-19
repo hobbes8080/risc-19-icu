@@ -18,5 +18,10 @@ The code in this repository provides basic data transformation. It aims to colla
   * data.frame patients_char: one row per patient, contains patient characteristics at the time of ICU admission and leading up to hospitalization and ICU admission, and outcome variables pertaining to the patient state after dismissal from the ICU.
   * data.frame patients_icu: long data.frame, one row per patient and timepoint (as of ver 1.0, the first 7 days represented in the core dataset are processed), contains all variables that are measured at all timepoints - meaning, during the ICU treatment.
   * timepoints in patients_icu (patient_icu$time): Day 0 is the timepoint of ICU admission, matching the time of day of ICU admission. Days n are the timepoints at day 0 + n, at 06:00 or at the time of first supine position if the patient was in prone position at 06:00.
+  * snapshot_date: date of database export
+  * snapshot_date_str: same, as a string suitable to append to output file names
+  * casenum: number of included patients
+  * centers_incl: number of centers that have included patients
+  * centers: list of centers that have included patients
 * The code transforms the variables contained in the database into the above mentioned framework, and generates some additional calculated variables in both data.frames
 * Additions to this repository by collaborating centers are encouraged
