@@ -1,5 +1,5 @@
 ## Data transformation
-## 2020-03 M. Hilty
+## 2020-03 M. Hilty, P Wendel Garcia
 
 ## -----------------------
 ## initial data processing
