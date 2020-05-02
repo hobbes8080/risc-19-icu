@@ -9,7 +9,7 @@ inp <- "./Input-data"
 fl_st <- "MulticentralCOVID19R_DATA_"
 
 ## find latest export file
-fl_csv <- list.files(inp, paste(fl_St, ".*csv", sep="")
+fl_csv <- list.files(inp, paste(fl_st, ".*csv", sep=""))                     
 csvfile <- paste(inp, "/", fl_csv[length(fl_csv)], sep="")
 
 ## read the files that are present

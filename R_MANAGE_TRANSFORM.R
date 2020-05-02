@@ -1,5 +1,5 @@
 ## Data transformation
-## 2020-03 M. Hilty, P Wendel Garcia
+## 2020-03 M. Hilty
 
 ## -----------------------
 ## initial data processing
@@ -172,3 +172,93 @@ patients_icu <- merge(patients_icu, patients_char, by=c("record_id"), all.x=T)
 
 ## perform calculations that require merged data
 ## ------------------------
+
+## SOFA (in patients_icu)
+patients_icu$sofa <- 0
+for(i in c(1:nrow(patients_icu))){
+    rs <- patients_icu$respsupp[i]
+    mv <- rs==5|is.na(rs)
+    patients_icu$sofa[i] <-
+        as.numeric(SOFA(gcs=patients_icu$gcs[i],
+                        pao2=patients_icu$pao2[i],
+                        fio2=patients_icu$fio2[i]/100,
+                        tc=patients_icu$thrombos[i],
+                        bilirubin=patients_icu$bili[i],
+                        msap=patients_icu$map[i],
+                        norepinephrine=patients_icu$nor[i],
+                        weight=patients_icu$weight[i],
+                        creatinine=patients_icu$crea[i],
+                        urine=patients_icu$estimated_urine_output[i]*1000,
+                        mv=mv,
+                        NAtreatasnormal=T)[1])
+}
+patients_icu$sofa
+
+## SAPS II and APACHE II (in patients_char)
+get_param <- function(nm, fn, rec_ID, ds){
+    res <- NA
+    res <- patients_icu[patients_icu$record_id==rec_ID &
+                        patients_icu$time %in% ds, nm]
+    case <- F
+    if(fn=="max"){res <- max(res, na.rm=T); case <- T}
+    if(fn=="min"){res <- min(res, na.rm=T); case <- T}
+    if(!case) res <- NA
+    if(!is.na(res) & abs(res)==Inf) res <- NA
+    return(res)  
+}
+days <- c(0, 1)
+patients_char$saps <- NA
+patients_char$apache <- NA
+for(i in c(1:nrow(patients_char))){
+    ## TODO: should choose by max subscore, not by min/max parameter
+    rec_ID <- patients_char$record_id[i]
+    age <- patients_char$age[i]
+    msap <- get_param("crea", "min", rec_ID, days)
+    hr <- get_param("hrmin", "min", rec_ID, days)
+    ssap <- msap + 40
+    rr <- get_param("rr", "max", rec_ID, days)
+    ## cave 0 may probably mean NA or anuria if data quality is bad...
+    urine <- get_param("estimated_urine_output", "max", rec_ID, 1)
+    temp <- get_param("temp", "max", rec_ID, days)
+    pao2 <- get_param("pao2", "min", rec_ID, days)
+    paco2 <- get_param("paco2", "max", rec_ID, days)
+    fio2 <- get_param("fio2", "max", rec_ID, days) / 100
+    HST <- get_param("HST", "max", rec_ID, days)
+    hct <- get_param("hct", "min", rec_ID, days)
+    leuco <- get_param("leuco", "max", rec_ID, days)
+    bilirubin <- get_param("bilirubin", "max", rec_ID, days)
+    creatinine <- get_param("creatinine", "max", rec_ID, days)
+    ph <- get_param("ph", "min", rec_ID, days)
+    rs <- get_param("respsupp", "max", rec_ID, 1)
+    mv <- rs==5|is.na(rs)
+    hco3 <- get_param("hco3", "min", rec_ID, days)
+    gcs <- get_param("gcs", "min", rec_ID, days)
+    ## adm_comorbid_simple 5: all categories (cancer, hemat, aids)
+    hematcancer <- patients_char$adm_comorbid_simple___5[i]==1
+    natrium <- patients_char$sodium[i]
+    kalium <- patients_char$potassium[i]
+    medical_adm <- T
+    akf <- patients_char$complications_short__2[i]==1|
+        patients_icu$rescue_resp__3[patients_icu$record_id==rec_ID &
+                                    patients_icu$time==1]==1
+    if(length(akf)==0) akf <- NA
+    ## immunocompr and chronicorganfailure are covered by the conversion of the extended dataset into adm_comorbid_simple___5
+    scores <- SAPS(age=age, HR=hr, ssap=ssap, temp=temp, pao2=pao2, fio2=fio2,
+                   mv=mv, urine=urine, HST=HST, leuco=leuco, kalium=kalium,
+                   natrium=natrium, hco3=hco3, bilirubin=bilirubin,
+                   gcs=gcs, hematcancer=hematcancer, medical_adm=medical_adm,
+                   msap=msap, RR=rr, paco2=paco2, pH=ph, creatinine=creatinine,
+                   hct=hct, akf=akf, 
+                   NAtreatasnormal=T)
+    ## scores <- data.frame(SAPS=1, APACHEphysio=1, APACHE=1)
+    patients_char$saps[i] <- as.numeric(scores$SAPS)
+    patients_char$apache[i] <- as.numeric(scores$APACHE)
+    patients_char$apache_physio[i] <- as.numeric(scores$APACHEphysio)
+    ## also copy sofa day 0/1 into the CHAR data.frame
+    sofa <- get_param("sofa", "max", rec_ID, days)
+    patients_char$sofa[i] <- sofa
+}
+
+patients_char$saps
+patients_char$apache_physio
+patients_char$apache

@@ -8,6 +8,9 @@ paste(R.Version()$version.string, R.Version()$nickname)
 ## install / load packages
 source("R_MANAGE_PACKAGES.R")
 
+## define custom functions
+source("R_FUNCTION_SOFA.R")
+
 ## Import raw Data
 source("R_MANAGE_IMPORT.R")
 
