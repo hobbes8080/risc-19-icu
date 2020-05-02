@@ -1,8 +1,7 @@
-## SOFA score calculator
-## 2012-09 by Matthias P Hilty
-## Written for R Version 2.15.0
+## SOFA, SAPS and APACHE score calculators
+## 2020-04 by Matthias P Hilty
 
-## Vincent JL, Moreno R, Takala J, et al. The SOFA (Sepsis-related Organ Failure Assessment) score to describe organ dysfunction/failure: on behalf of the Working Group on Sepsis-Related Problems of the European Society of Intensive Care Medicine. Intensive Care Med. 1996;22(7):707-710
+## SOFA: Vincent JL, Moreno R, Takala J, et al. The SOFA (Sepsis-related Organ Failure Assessment) score to describe organ dysfunction/failure: on behalf of the Working Group on Sepsis-Related Problems of the European Society of Intensive Care Medicine. Intensive Care Med. 1996;22(7):707-710
 
 ## Input values: value unit varname
 ## Weight kg weight
