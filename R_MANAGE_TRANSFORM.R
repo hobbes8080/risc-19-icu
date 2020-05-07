@@ -206,6 +206,19 @@ get_param <- function(nm, fn, rec_ID, ds){
     if(!is.na(res) & abs(res)==Inf) res <- NA
     return(res)  
 }
+get_param2 <- function(nm, fn, rec_ID, ds) {
+    # returns values for all days 'ds' (possibly NA)
+    res <- NA
+    res <- patients_icu[patients_icu$record_id==rec_ID &
+                        patients_icu$time %in% ds, nm]
+    # case <- F
+    # if(fn=="max"){res <- max(res, na.rm=T); case <- T}
+    # if(fn=="min"){res <- min(res, na.rm=T); case <- T}
+    # if(!case) res <- NA
+    # if(!is.na(res) & abs(res)==Inf) res <- NA
+    return(res)  
+}                                
+
 days <- c(0, 1)
 patients_char$saps <- NA
 patients_char$apache <- NA
@@ -213,26 +226,26 @@ for(i in c(1:nrow(patients_char))){
     ## TODO: should choose by max subscore, not by min/max parameter
     rec_ID <- patients_char$record_id[i]
     age <- patients_char$age[i]
-    msap <- get_param("crea", "min", rec_ID, days)
-    hr <- get_param("hrmin", "min", rec_ID, days)
+    msap <- get_param2("crea", "min", rec_ID, days)
+    hr <- get_param2("hrmin", "min", rec_ID, days)
     ssap <- msap + 40
-    rr <- get_param("rr", "max", rec_ID, days)
+    rr <- get_param2("rr", "max", rec_ID, days)
     ## cave 0 may probably mean NA or anuria if data quality is bad...
-    urine <- get_param("estimated_urine_output", "max", rec_ID, 1)
-    temp <- get_param("temp", "max", rec_ID, days)
-    pao2 <- get_param("pao2", "min", rec_ID, days)
-    paco2 <- get_param("paco2", "max", rec_ID, days)
-    fio2 <- get_param("fio2", "max", rec_ID, days) / 100
-    HST <- get_param("HST", "max", rec_ID, days)
-    hct <- get_param("hct", "min", rec_ID, days)
-    leuco <- get_param("leuco", "max", rec_ID, days)
-    bilirubin <- get_param("bilirubin", "max", rec_ID, days)
-    creatinine <- get_param("creatinine", "max", rec_ID, days)
-    ph <- get_param("ph", "min", rec_ID, days)
-    rs <- get_param("respsupp", "max", rec_ID, 1)
+    urine <- get_param2("estimated_urine_output", "max", rec_ID, 1) #urineout?
+    temp <- get_param2("temp", "max", rec_ID, days)
+    pao2 <- get_param2("pao2", "min", rec_ID, days)
+    paco2 <- get_param2("paco2", "max", rec_ID, days)
+    fio2 <- get_param2("fio2", "max", rec_ID, days) / 100
+    HST <- get_param2("HST", "max", rec_ID, days)
+    hct <- get_param2("hct", "min", rec_ID, days)
+    leuco <- get_param2("leuco", "max", rec_ID, days)
+    bilirubin <- get_param2("bilirubin", "max", rec_ID, days)
+    creatinine <- get_param2("creatinine", "max", rec_ID, days)
+    ph <- get_param2("ph", "min", rec_ID, days)
+    rs <- get_param2("respsupp", "max", rec_ID, 1)
     mv <- rs==5|is.na(rs)
-    hco3 <- get_param("hco3", "min", rec_ID, days)
-    gcs <- get_param("gcs", "min", rec_ID, days)
+    hco3 <- get_param2("hco3", "min", rec_ID, days)
+    gcs <- get_param2("gcs", "min", rec_ID, days)
     ## adm_comorbid_simple 5: all categories (cancer, hemat, aids)
     hematcancer <- patients_char$adm_comorbid_simple___5[i]==1
     natrium <- patients_char$sodium[i]
