@@ -92,6 +92,10 @@ colnames(patients_icu)
 patients_char_adm <- patients_adm[, -c(col_icu:(col_admin-1))]
 patients_char_dis <- cbind(patients_dis$record_id, patients_dis[, c(col_dis:(col_admin-1))])
 colnames(patients_char_dis)[1] <- "record_id"
+## save col nums for later merging and subcollectioning
+num_adm <- ncol(patients_char_adm)
+num_dis <- ncol(patients_char_dis)-1
+## merge
 patients_char <- merge(patients_char_adm, patients_char_dis, by=c("record_id"), all.x=T)
 ## ------------------------
 ## calculate CHAR
@@ -262,3 +266,6 @@ for(i in c(1:nrow(patients_char))){
 patients_char$saps
 patients_char$apache_physio
 patients_char$apache
+
+## create patients_adm dataframe (only the admission criteria, useful to build prediction models) from patients_char.this step is repeated here to include all calculated variables.
+patients_adm <- patients_char[, c(1:num_adm, (num_adm+num_dis+1):ncol(patients_char))]
