@@ -17,6 +17,7 @@ The code in this repository provides basic data transformation. It aims to colla
 * in case that a database record was filled out with the eCRF set to the core dataset specifications, the variables pertaining the the extended dataset will contain missing values
 * the data is transformed and the following variables are generated
   * data.frame patients_char: one row per patient, contains patient characteristics at the time of ICU admission and leading up to hospitalization and ICU admission, and outcome variables pertaining to the patient state after dismissal from the ICU.
+  * data.frame patients_adm: one row per patient, contains patient characteristics at the time of ICU admission and leading up to hospitalization and ICU admission, useful for predictive model training.
   * data.frame patients_icu: long data.frame, one row per patient and timepoint (as of ver 1.0, the first 7 days represented in the core dataset are processed), contains all variables that are measured at all timepoints - meaning, during the ICU treatment.
   * timepoints in patients_icu (patients_icu$time): Day 0 is the timepoint of ICU admission, matching the time of day of ICU admission. Days n are the timepoints at day 0 + n, at 06:00 or at the time of first supine position if the patient was in prone position at 06:00.
   * snapshot_date: date of database export
