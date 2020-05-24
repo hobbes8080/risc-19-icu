@@ -269,3 +269,8 @@ patients_char$apache
 
 ## create patients_adm dataframe (only the admission criteria, useful to build prediction models) from patients_char.this step is repeated here to include all calculated variables.
 patients_adm <- patients_char[, c(1:num_adm, (num_adm+num_dis+1):ncol(patients_char))]
+
+## remove los, death
+rm <- which(substr(colnames(patients_adm),1,3)=="los"|
+      substr(colnames(patients_adm),1,5)=="death")
+patients_adm <- patients_adm[, -rm]
