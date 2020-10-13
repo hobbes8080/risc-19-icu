@@ -151,35 +151,35 @@ SAPS <- function(age=30, HR=90, ssap=120, temp=37, pao2=12, fio2=0.21, mv=F,
                  akf=F, chronicorganfailure=F, immunocompr=F,
                  NAtreatasnormal=F){
     if(NAtreatasnormal){
-        if(is.na(age)) age <- 30
-        if(is.na(pao2)) pao2<-12
-        if(is.na(fio2)) fio2<-0.21
-        if(is.na(mv)) mv<-F
-        if(is.na(gcs)) gcs<-15
-        if(is.na(msap)) msap<-65
-        if(is.na(ssap)) ssap<-120
-        if(is.na(temp)) temp<-37
-        if(is.na(HR)) HR<-90
-        if(is.na(hco3)) hco3<-22
-        if(is.na(HST)) HST<-0
-        if(is.na(leuco)) leuco<-5
-        if(is.na(bilirubin)) bilirubin<-0
-        if(is.na(natrium)) natrium<-140
-        if(is.na(creatinine)) creatinine<-60
-        if(is.na(urine)) urine<-2000
-        if(is.na(kalium)) kalium<-4
-        if(is.na(cancer)) cancer<-F
-        if(is.na(hematcancer)) hematcancer<-F
-        if(is.na(medical_adm)) medical_adm<-F
-        if(is.na(emergencysurgery)) emergencysurgery<-F
-        if(is.na(RR)) RR<-20
-        if(is.na(paco2)) paco2<-5
-        if(is.na(pH)) pH<-7.4
-        if(is.na(hct)) hct<-0.4
-        if(is.na(akf)) akf<-F
-        if(is.na(chronicorganfailure)) chronicorganfailure<-F
-        if(is.na(immunocompr)) immunocompr<-F
-        if(is.na(AIDS)) AIDS<-F
+        if(all(is.na(age))) age <- 30
+        if(all(is.na(pao2))) pao2<-12
+        if(all(is.na(fio2))) fio2<-0.21
+        if(all(is.na(mv))) mv<-F
+        if(all(is.na(gcs))) gcs<-15
+        if(all(is.na(msap))) msap<-65
+        if(all(is.na(ssap))) ssap<-120
+        if(all(is.na(temp))) temp<-37
+        if(all(is.na(HR))) HR<-90
+        if(all(is.na(hco3))) hco3<-22
+        if(all(is.na(HST))) HST<-0
+        if(all(is.na(leuco))) leuco<-5
+        if(all(is.na(bilirubin))) bilirubin<-0
+        if(all(is.na(natrium))) natrium<-140
+        if(all(is.na(creatinine))) creatinine<-60
+        if(all(is.na(urine))) urine<-2000
+        if(all(is.na(kalium))) kalium<-4
+        if(all(is.na(cancer))) cancer<-F
+        if(all(is.na(hematcancer))) hematcancer<-F
+        if(all(is.na(medical_adm))) medical_adm<-F
+        if(all(is.na(emergencysurgery))) emergencysurgery<-F
+        if(all(is.na(RR))) RR<-20
+        if(all(is.na(paco2))) paco2<-5
+        if(all(is.na(pH))) pH<-7.4
+        if(all(is.na(hct))) hct<-0.4
+        if(all(is.na(akf))) akf<-F
+        if(all(is.na(chronicorganfailure))) chronicorganfailure<-F
+        if(all(is.na(immunocompr))) immunocompr<-F
+        if(all(is.na(AIDS))) AIDS<-F
     }else{
         ## TODO: treat SAPS and APACHE seperately here, to get independent NA results
         if(is.na(age) | is.na(pao2) | is.na(fio2) | is.na(mv) | is.na(gcs) | is.na(msap) | is.na(ssap) | is.na(temp) | is.na(HR) | is.na(hco3) | is.na(HST) | is.na(leuco) | is.na(bilirubin) | is.na(natrium) | is.na(creatinine) | is.na(urine) | is.na(kalium) | is.na(cancer) | is.na(hematcancer) | is.na(medical_adm) | is.na(emergencysurgery) | is.na(RR) | is.na(paco2) | is.na(pH) | is.na(hct) | is.na(akf) | is.na(chronicorganfailure) | is.na(immunocompr) | is.na(AIDS))
@@ -194,90 +194,93 @@ SAPS <- function(age=30, HR=90, ssap=120, temp=37, pao2=12, fio2=0.21, mv=F,
     ## age
     match<-findInterval(age, c(0, 50, 60, 70, 75, 80))
     index<-c(0, 7, 12, 15, 16, 18)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## HR
     match<-findInterval(HR, c(0, 40, 70, 120 ,160))
     index<-c(11, 2, 0, 4, 7)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## ssap
     match<-findInterval(ssap, c(0, 70, 100, 200))
     index<-c(13, 5, 0, 2)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## temp
     match<-findInterval(temp, c(0, 39))
     index<-c(0, 3)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## oi
     if(mv){
         match<-findInterval(oxyindex, c(0, 100, 200))
         index<-c(11, 9, 6)[match]
-        saps <- saps + index
+        saps <- saps + max(index, na.rm = TRUE)
     }
     ## urine
     match<-findInterval(urine, c(0, 500, 1000))
     index<-c(11, 4, 0)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## HST
     match<-findInterval(HST, c(0, 10, 30))
     index<-c(0, 6, 10)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## leuco
     match<-findInterval(leuco, c(0, 1, 20))
     index<-c(12, 0, 3)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## kalium
     match<-findInterval(kalium, c(0, 3, 5))
     index<-c(3, 0, 3)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## natrium
     match<-findInterval(natrium, c(0, 125, 145))
     index<-c(5, 0, 1)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## hco3
     match<-findInterval(hco3, c(0, 15, 20))
     index<-c(6, 3, 0)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## bilirubin
     match<-findInterval(bilirubin, c(0, 68.4, 102.6))
     index<-c(0, 4, 9)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## gcs
     match<-findInterval(gcs, c(0, 6, 9, 11, 14))
     index<-c(26, 13, 7, 5, 0)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## leuco
     match<-findInterval(leuco, c(0, 1, 20))
     index<-c(12, 0, 3)[match]
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## chronic
     index <- 0
     if(AIDS){index <- 7}else{if(hematcancer){index <- 10}else{if(cancer){index <- 9}}}
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## admission
     index <- 0
     if(emergencysurgery){index <- 8}else{if(medical_adm){index <- 6}}
-    saps <- saps + index
+    saps <- saps + max(index, na.rm = TRUE)
     ## ---------------------
     ## APACHE
     apache <- 0
     ## temp
     match<-findInterval(temp, c(0, 30, 32, 34, 36, 38.5, 39 ,41))
     index<-c(4, 3, 2, 1, 0, 1, 3, 4)[match]
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## msap
     match<-findInterval(msap, c(0, 50, 70, 110, 130, 160))
     index<-c(4, 2, 0, 2, 3, 4)[match]
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## HR
     match<-findInterval(HR, c(0, 40, 55, 70, 110, 140, 180))
     index<-c(4, 3, 2, 0, 2, 3, 4)[match]
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## RR
     match<-findInterval(RR, c(0, 5, 10, 12, 25, 35, 50))
     index<-c(4, 2, 1, 0, 1, 3, 4)[match]
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## oi
-    if(fio2>0.5){
+    if(max(fio2, na.rm = TRUE)>0.5){
+        ## Alexander Henzi: fio2 has now 2 entries c(fi1, fi2), and if the
+        ## maximum is greater than 0.5, we are in this case; otherwise, the 
+        ## 'else' case applies.
         match<-findInterval(aAo2, c(0, 200, 350, 500))
         index<-c(0, 2, 3, 4)[match]
     }else{
@@ -285,41 +288,41 @@ SAPS <- function(age=30, HR=90, ssap=120, temp=37, pao2=12, fio2=0.21, mv=F,
         index<-c(4, 3, 1, 0)[match]
     }
     if(length(index)==0) index <- 0
-    apache <- apache + index    
+    apache <- apache + max(index, na.rm = TRUE)    
     ## pH
     match<-findInterval(pH, c(0, 7.15, 7.25, 7.33, 7.5, 7.6, 7.7))
     index<-c(4, 3, 2, 0, 1, 3, 4)[match]
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## natrium
     match<-findInterval(natrium, c(0, 110, 120, 130, 150, 155, 160, 180))
     index<-c(4, 3, 2, 0, 1, 2, 3, 4)[match]
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## kalium
     match<-findInterval(kalium, c(0, 2.5, 3, 3.5, 5.5, 6, 7))
     index<-c(4, 2, 1, 0, 1, 3, 4)[match]
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## creatinine
     match<-findInterval(creatinine/88.42, c(0, 0.6, 1.5, 2, 3.5))
     index<-c(2, 0, 2, 3, 4)[match]
     if(akf) index <- index * 2
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## hct
     match<-findInterval(hct*100, c(0, 20, 30, 46, 50, 60))
     index<-c(4, 2, 0, 1, 2, 4)[match]
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## leuco
     match<-findInterval(leuco, c(0, 1, 3, 15, 20, 40))
     index<-c(4, 2, 0, 1, 2, 4)[match]
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## gcs
     index <- 15-gcs
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## physiology subscore
     apache_physio <- apache
     ## age
     match<-findInterval(age, c(0, 45, 55, 65, 75))
     index<-c(0, 2, 3, 5, 6)[match]
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## chronic disease
     index <- 0
     if(AIDS|cancer|hematcancer|immunocompr|chronicorganfailure){
@@ -329,7 +332,7 @@ SAPS <- function(age=30, HR=90, ssap=120, temp=37, pao2=12, fio2=0.21, mv=F,
             index <- 2
         }
     }   
-    apache <- apache + index
+    apache <- apache + max(index, na.rm = TRUE)
     ## ---------------------------
     return(data.frame(SAPS=saps, APACHEphysio=apache_physio, APACHE=apache))
 }
